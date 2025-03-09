@@ -30,9 +30,6 @@ const PolkaDotBackground = () => {
   const viewportHeight = dimensions.height;
   const viewportWidth = dimensions.width;
   
-  // Calculate right third of screen
-  const rightThirdStart = Math.floor(viewportWidth * 2/3);
-  
   // Calculate the pivot point (55% from top)
   const pivotPointY = Math.floor(viewportHeight * 0.55);
   
@@ -61,7 +58,7 @@ const PolkaDotBackground = () => {
     const startCol = Math.floor((rowStartX - rowOffset) / horizontalGap);
     
     for (let colIndex = startCol; colIndex < maxCols; colIndex++) {
-      let sequenceIndex = (colIndex + (isOffset ? 2 : 0)) % 3;
+      const sequenceIndex = (colIndex + (isOffset ? 2 : 0)) % 3;
       const dotType = sequence[sequenceIndex];
       
       let className = '';
