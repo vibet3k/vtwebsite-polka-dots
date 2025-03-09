@@ -26,16 +26,41 @@ const PolkaDotBackground = () => {
   const sequence = ['white', 'pink', 'green'];
   const dots = [];
   
-  // Calculate how many rows and columns we need to cover the entire viewport
-  const rows = Math.ceil(dimensions.height / verticalGap) + 1;
-  const cols = Math.ceil(dimensions.width / horizontalGap) + 1;
+  // Calculate viewport dimensions
+  const viewportHeight = dimensions.height;
+  const viewportWidth = dimensions.width;
+  
+  // Calculate right third of screen
+  const rightThirdStart = Math.floor(viewportWidth * 2/3);
+  
+  // Calculate the pivot point (55% from top)
+  const pivotPointY = Math.floor(viewportHeight * 0.55);
+  
+  // Calculate rows and columns
+  const rows = Math.ceil(viewportHeight / verticalGap) + 1;
+  const maxCols = Math.ceil(viewportWidth / horizontalGap) + 1;
   
   // Generate a grid of dots
   for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
     const isOffset = rowIndex % 2 === 1;
     const rowOffset = isOffset ? horizontalGap / 2 : 0;
     
-    for (let colIndex = 0; colIndex < cols; colIndex++) {
+    // Calculate the Y position
+    const yPos = rowIndex * verticalGap;
+    
+    // Calculate how far this row is from the pivot point
+    const distanceFromPivot = Math.abs(yPos - pivotPointY);
+    
+    // Calculate the starting X position for this row
+    // Rows closer to the pivot point start further left (closer to 2/3 mark)
+    // Rows farther from pivot start further right
+    const xStartPercent = 2/3 + (distanceFromPivot / viewportHeight) * 0.25;
+    const rowStartX = Math.floor(viewportWidth * xStartPercent);
+    
+    // Calculate the starting column for this row
+    const startCol = Math.floor((rowStartX - rowOffset) / horizontalGap);
+    
+    for (let colIndex = startCol; colIndex < maxCols; colIndex++) {
       let sequenceIndex = (colIndex + (isOffset ? 2 : 0)) % 3;
       const dotType = sequence[sequenceIndex];
       
@@ -51,7 +76,7 @@ const PolkaDotBackground = () => {
           style={{
             width: `${circleSize}px`,
             height: `${circleSize}px`,
-            top: `${rowIndex * verticalGap}px`,
+            top: `${yPos}px`,
             left: `${colIndex * horizontalGap + rowOffset}px`,
           }}
         />
