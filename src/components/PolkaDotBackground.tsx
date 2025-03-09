@@ -1,10 +1,11 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 const PolkaDotBackground = () => {
   const [dimensions, setDimensions] = useState({ width: 1200, height: 800 });
-  const [showDebug, setShowDebug] = useState(true); // Debug mode enabled by default
+  const [showDebug, setShowDebug] = useState(true);
   
   useEffect(() => {
     function updateDimensions() {
@@ -135,6 +136,15 @@ const PolkaDotBackground = () => {
     <div className="bg-[#0074bc] w-screen h-screen overflow-hidden relative">
       {/* Polka dot pattern */}
       {dots}
+      
+      {/* Logo in the upper left */}
+      <div className="absolute top-8 left-8 z-10">
+        <img 
+          src="/images/vt_Logo_Tagline_White.png" 
+          alt="Vibrant Technology Logo" 
+          className="w-160"
+        />
+      </div>
       
       {/* Row number labels */}
       {showDebug && rowLabels}
