@@ -1,4 +1,4 @@
-import PolkaDotBackground from '../components/PolkaDotBackground';
+import PolkaDotBackground from '@/components/PolkaDotBackground';
 
 export default function Home() {
   return (
