@@ -87,12 +87,12 @@ const PolkaDotBackground = () => {
       const dotType = sequence[sequenceIndex];
       
       let className = '';
-      let style = {
+      const style: React.CSSProperties = {
         width: `${circleSize}px`,
         height: `${circleSize}px`,
         top: `${yPos}px`,
         left: `${colIndex * horizontalGap + rowOffset}px`,
-        position: 'absolute' as 'absolute',
+        position: 'absolute',
       };
       
       if (dotType === 'pink') {
@@ -103,10 +103,7 @@ const PolkaDotBackground = () => {
         // Using inline style for white circles to reduce border width by 30%
         // Default border width is 2px, 70% of that is 1.4px
         className = "rounded-full bg-transparent";
-        style = {
-          ...style,
-          border: '1.4px solid white',  // 30% reduction from 2px
-        };
+        style.border = '1.4px solid white'; // 30% reduction from 2px
       }
       
       dots.push(
@@ -145,7 +142,7 @@ const PolkaDotBackground = () => {
       {/* Debug toggle instruction */}
       {showDebug && (
         <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white p-2 text-sm rounded z-50">
-          Press 'd' to toggle debug overlay
+          Press &ldquo;d&rdquo; to toggle debug overlay
         </div>
       )}
       
