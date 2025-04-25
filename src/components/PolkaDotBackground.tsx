@@ -22,7 +22,7 @@ const PolkaDotBackground = () => {
   
   // Circle properties - adjust for mobile
   const circleSize = dimensions.width < 768 ? 30 : 50; // Smaller circles on mobile
-  const horizontalGap = dimensions.width < 768 ? 45 : 70; // Slightly wider spacing than previous
+  const horizontalGap = dimensions.width < 768 ? 45 : 70;
   const verticalGap = dimensions.width < 768 ? 45 : 70;
   const sequence = ['pink', 'green', 'white'];
   const dots = [];
@@ -35,7 +35,7 @@ const PolkaDotBackground = () => {
   const pivotPointY = Math.floor(viewportHeight * 0.55);
   
   // Calculate rows and columns - ensure enough rows to cover full screen height
-  const rows = Math.ceil((viewportHeight + verticalGap * 2) / verticalGap) + 2; // Added +2 to ensure coverage
+  const rows = Math.ceil((viewportHeight + verticalGap * 2) / verticalGap) + 2;
   const maxCols = Math.ceil(viewportWidth / horizontalGap) + 1;
   
   // Generate a grid of dots
@@ -50,17 +50,25 @@ const PolkaDotBackground = () => {
     const distanceFromPivot = Math.abs(yPos - pivotPointY);
     
     // Calculate the starting X position for this row
-    const xStartPercentMobile = dimensions.width < 768 ? 0.65 : 2/3; // Adjusted from 0.5 to 0.65
+    const xStartPercentMobile = dimensions.width < 768 ? 0.65 : 2/3;
     const xStartPercent = xStartPercentMobile + (distanceFromPivot / viewportHeight) * 0.25;
     const rowStartX = Math.floor(viewportWidth * xStartPercent);
     
     // Calculate the starting column for this row
     let startCol = Math.floor((rowStartX - rowOffset) / horizontalGap);
     
-    // Adjust specific rows to have fewer dots on the left
+    // Apply specific adjustments for mobile view
     if (dimensions.width < 768) {
-      // Mobile row adjustments
-      if (rowIndex === 5 || rowIndex === 9 || rowIndex === 14) {
+      // Top row (remove 2 left-most dots)
+      if (rowIndex === 0) {
+        startCol += 2;
+      }
+      // Second row from top (remove 1 left-most dot)
+      else if (rowIndex === 1) {
+        startCol += 1;
+      }
+      // Bottom two rows (remove 1 left-most dot from each)
+      else if (rowIndex >= rows - 2) {
         startCol += 1;
       }
     } else {
