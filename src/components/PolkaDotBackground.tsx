@@ -20,10 +20,10 @@ const PolkaDotBackground = () => {
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
   
-  // Circle properties
+  // Circle properties - adjust for mobile
   const circleSize = dimensions.width < 768 ? 30 : 50; // Smaller circles on mobile
-  const horizontalGap = dimensions.width < 768 ? 50 : 70; // Smaller gaps on mobile
-  const verticalGap = dimensions.width < 768 ? 50 : 70;
+  const horizontalGap = dimensions.width < 768 ? 40 : 70; // Tighter spacing on mobile
+  const verticalGap = dimensions.width < 768 ? 45 : 70;   // Tighter vertical spacing
   const sequence = ['pink', 'green', 'white'];
   const dots = [];
   
@@ -49,26 +49,33 @@ const PolkaDotBackground = () => {
     // Calculate how far this row is from the pivot point
     const distanceFromPivot = Math.abs(yPos - pivotPointY);
     
-    // Calculate the starting X position for this row
-    // Adjust for mobile to have fewer dots (more space on left)
-    const xStartPercentMobile = dimensions.width < 768 ? 0.75 : 2/3;
+    // Calculate the starting X position for this row - show more dots on mobile
+    const xStartPercentMobile = dimensions.width < 768 ? 0.5 : 2/3; // Reduced from 0.75 to 0.5 for mobile
     const xStartPercent = xStartPercentMobile + (distanceFromPivot / viewportHeight) * 0.25;
     const rowStartX = Math.floor(viewportWidth * xStartPercent);
     
     // Calculate the starting column for this row
     let startCol = Math.floor((rowStartX - rowOffset) / horizontalGap);
     
-    // Adjust specific rows to have fewer dots on the left
-    if (rowIndex === 5 || rowIndex === 7 || rowIndex === 9 || rowIndex === 12 || rowIndex === 14) {
-      startCol += 1; // Remove the leftmost dot
-    }
-    else if (rowIndex === 2 || rowIndex === 3 || rowIndex === 4) {
-      startCol += 2; // Remove the two leftmost dots
+    // Adjust specific rows to have fewer dots on the left - but less aggressive on mobile
+    if (dimensions.width < 768) {
+      // Simplified row adjustments for mobile
+      if (rowIndex === 5 || rowIndex === 9 || rowIndex === 14) {
+        startCol += 1; // Remove only one dot for certain rows on mobile
+      }
+    } else {
+      // Original desktop adjustments
+      if (rowIndex === 5 || rowIndex === 7 || rowIndex === 9 || rowIndex === 12 || rowIndex === 14) {
+        startCol += 1; 
+      }
+      else if (rowIndex === 2 || rowIndex === 3 || rowIndex === 4) {
+        startCol += 2; 
+      }
     }
     
-    // For mobile, apply additional spacing adjustments to avoid overcrowding
-    if (dimensions.width < 768 && (rowIndex % 3 === 0)) {
-      startCol += 1;
+    // For very small screens, ensure a minimum number of dots per row
+    if (dimensions.width < 375 && startCol > 1) {
+      startCol = 1; // Ensure at least a few dots show on very small screens
     }
     
     for (let colIndex = startCol; colIndex < maxCols; colIndex++) {
@@ -89,9 +96,6 @@ const PolkaDotBackground = () => {
       } else if (dotType === 'green') {
         className = "bg-[#39b54a] rounded-full";
       } else if (dotType === 'white') {
-        // Using inline style for white circles to reduce border width by 30%
-        // Default border width is 2px, 70% of that is 1.4px
-        // Further reduce for mobile
         const borderWidth = dimensions.width < 768 ? '1px' : '1.4px';
         className = "rounded-full bg-transparent";
         style.border = `${borderWidth} solid white`;
