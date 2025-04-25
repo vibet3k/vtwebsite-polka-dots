@@ -5,7 +5,6 @@ import Image from 'next/image';
 
 const PolkaDotBackground = () => {
   const [dimensions, setDimensions] = useState({ width: 1200, height: 800 });
-  const [showDebug, setShowDebug] = useState(true);
   
   useEffect(() => {
     function updateDimensions() {
@@ -22,12 +21,11 @@ const PolkaDotBackground = () => {
   }, []);
   
   // Circle properties
-  const circleSize = 50;
-  const horizontalGap = 70;
-  const verticalGap = 70;
+  const circleSize = dimensions.width < 768 ? 30 : 50; // Smaller circles on mobile
+  const horizontalGap = dimensions.width < 768 ? 50 : 70; // Smaller gaps on mobile
+  const verticalGap = dimensions.width < 768 ? 50 : 70;
   const sequence = ['pink', 'green', 'white'];
   const dots = [];
-  const rowLabels = [];
   
   // Calculate viewport dimensions
   const viewportHeight = dimensions.height;
@@ -48,28 +46,13 @@ const PolkaDotBackground = () => {
     // Calculate the Y position - shift up by two rows
     const yPos = rowIndex * verticalGap - (verticalGap * 2);
     
-    // Add row label for debugging
-    if (showDebug) {
-      rowLabels.push(
-        <div 
-          key={`row-${rowIndex}`} 
-          className="absolute text-white bg-black bg-opacity-50 px-1 rounded text-xs"
-          style={{
-            top: `${yPos + circleSize/2 - 8}px`,
-            left: '5px',
-            zIndex: 100
-          }}
-        >
-          Row {rowIndex}
-        </div>
-      );
-    }
-    
     // Calculate how far this row is from the pivot point
     const distanceFromPivot = Math.abs(yPos - pivotPointY);
     
     // Calculate the starting X position for this row
-    const xStartPercent = 2/3 + (distanceFromPivot / viewportHeight) * 0.25;
+    // Adjust for mobile to have fewer dots (more space on left)
+    const xStartPercentMobile = dimensions.width < 768 ? 0.75 : 2/3;
+    const xStartPercent = xStartPercentMobile + (distanceFromPivot / viewportHeight) * 0.25;
     const rowStartX = Math.floor(viewportWidth * xStartPercent);
     
     // Calculate the starting column for this row
@@ -81,6 +64,11 @@ const PolkaDotBackground = () => {
     }
     else if (rowIndex === 2 || rowIndex === 3 || rowIndex === 4) {
       startCol += 2; // Remove the two leftmost dots
+    }
+    
+    // For mobile, apply additional spacing adjustments to avoid overcrowding
+    if (dimensions.width < 768 && (rowIndex % 3 === 0)) {
+      startCol += 1;
     }
     
     for (let colIndex = startCol; colIndex < maxCols; colIndex++) {
@@ -103,8 +91,10 @@ const PolkaDotBackground = () => {
       } else if (dotType === 'white') {
         // Using inline style for white circles to reduce border width by 30%
         // Default border width is 2px, 70% of that is 1.4px
+        // Further reduce for mobile
+        const borderWidth = dimensions.width < 768 ? '1px' : '1.4px';
         className = "rounded-full bg-transparent";
-        style.border = '1.4px solid white'; // 30% reduction from 2px
+        style.border = `${borderWidth} solid white`;
       }
       
       dots.push(
@@ -117,44 +107,25 @@ const PolkaDotBackground = () => {
     }
   }
   
-  // Footer height
-  const footerHeight = 50;
-  
-  // Toggle debug mode with "d" key
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'd') {
-        setShowDebug(prev => !prev);
-      }
-    }
-    
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  // Footer height - smaller on mobile
+  const footerHeight = dimensions.width < 768 ? 40 : 50;
   
   return (
     <div className="bg-[#0074bc] w-screen h-screen overflow-hidden relative">
       {/* Polka dot pattern */}
       {dots}
       
-      {/* Logo in the upper left */}
-      <div className="absolute top-8 left-8 z-10">
-        <img 
+      {/* Logo in the upper left - responsive sizing */}
+      <div className="absolute top-4 md:top-8 left-4 md:left-8 z-10">
+        <Image 
           src="/images/vt_Logo_Tagline_White.png" 
           alt="Vibrant Technology Logo" 
-          className="w-160"
+          width={dimensions.width < 768 ? 180 : 300}
+          height={dimensions.width < 768 ? 60 : 100}
+          className="w-[180px] md:w-[240px] lg:w-[300px]"
+          priority
         />
       </div>
-      
-      {/* Row number labels */}
-      {showDebug && rowLabels}
-      
-      {/* Debug toggle instruction */}
-      {showDebug && (
-        <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white p-2 text-sm rounded z-50">
-          Press &ldquo;d&rdquo; to toggle debug overlay
-        </div>
-      )}
       
       {/* Kelly Green footer */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#39b54a]" style={{ height: `${footerHeight}px` }}>
