@@ -59,13 +59,14 @@ const PolkaDotBackground = () => {
     
     // Apply specific adjustments for mobile view
     if (dimensions.width < 768) {
-      // Top row (remove 2 left-most dots)
-      if (rowIndex === 0) {
-        startCol += 2;
-      }
-      // Second row from top (remove 1 left-most dot)
-      else if (rowIndex === 1) {
-        startCol += 1;
+      // Skip the top 4 dots completely (rows 0-1 for the first 2 columns)
+      if (rowIndex <= 1) {
+        // For first two rows, skip all dots on small mobile screens
+        if (dimensions.width < 480) {
+          continue;
+        }
+        // For other mobile screens, start much further right
+        startCol = Math.max(startCol, maxCols - 1);
       }
       // Bottom two rows (remove 1 left-most dot from each)
       else if (rowIndex >= rows - 2) {
@@ -82,6 +83,14 @@ const PolkaDotBackground = () => {
     }
     
     for (let colIndex = startCol; colIndex < maxCols; colIndex++) {
+      // On mobile, skip dots in the top-right area (first 2 rows, right side)
+      if (dimensions.width < 768 && rowIndex <= 1) {
+        // Skip dots in the top-right corner (the area you circled)
+        if (colIndex >= maxCols - 3) {
+          continue;
+        }
+      }
+      
       const sequenceIndex = (colIndex + (isOffset ? 2 : 0)) % 3;
       const dotType = sequence[sequenceIndex];
       
