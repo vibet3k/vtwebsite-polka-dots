@@ -22,8 +22,8 @@ const PolkaDotBackground = () => {
   
   // Circle properties - adjust for mobile
   const circleSize = dimensions.width < 768 ? 30 : 50; // Smaller circles on mobile
-  const horizontalGap = dimensions.width < 768 ? 40 : 70; // Tighter spacing on mobile
-  const verticalGap = dimensions.width < 768 ? 45 : 70;   // Tighter vertical spacing
+  const horizontalGap = dimensions.width < 768 ? 45 : 70; // Slightly wider spacing than previous
+  const verticalGap = dimensions.width < 768 ? 45 : 70;
   const sequence = ['pink', 'green', 'white'];
   const dots = [];
   
@@ -34,8 +34,8 @@ const PolkaDotBackground = () => {
   // Calculate the pivot point (55% from top)
   const pivotPointY = Math.floor(viewportHeight * 0.55);
   
-  // Calculate rows and columns
-  const rows = Math.ceil(viewportHeight / verticalGap) + 1;
+  // Calculate rows and columns - ensure enough rows to cover full screen height
+  const rows = Math.ceil((viewportHeight + verticalGap * 2) / verticalGap) + 2; // Added +2 to ensure coverage
   const maxCols = Math.ceil(viewportWidth / horizontalGap) + 1;
   
   // Generate a grid of dots
@@ -49,19 +49,19 @@ const PolkaDotBackground = () => {
     // Calculate how far this row is from the pivot point
     const distanceFromPivot = Math.abs(yPos - pivotPointY);
     
-    // Calculate the starting X position for this row - show more dots on mobile
-    const xStartPercentMobile = dimensions.width < 768 ? 0.5 : 2/3; // Reduced from 0.75 to 0.5 for mobile
+    // Calculate the starting X position for this row
+    const xStartPercentMobile = dimensions.width < 768 ? 0.65 : 2/3; // Adjusted from 0.5 to 0.65
     const xStartPercent = xStartPercentMobile + (distanceFromPivot / viewportHeight) * 0.25;
     const rowStartX = Math.floor(viewportWidth * xStartPercent);
     
     // Calculate the starting column for this row
     let startCol = Math.floor((rowStartX - rowOffset) / horizontalGap);
     
-    // Adjust specific rows to have fewer dots on the left - but less aggressive on mobile
+    // Adjust specific rows to have fewer dots on the left
     if (dimensions.width < 768) {
-      // Simplified row adjustments for mobile
+      // Mobile row adjustments
       if (rowIndex === 5 || rowIndex === 9 || rowIndex === 14) {
-        startCol += 1; // Remove only one dot for certain rows on mobile
+        startCol += 1;
       }
     } else {
       // Original desktop adjustments
@@ -71,11 +71,6 @@ const PolkaDotBackground = () => {
       else if (rowIndex === 2 || rowIndex === 3 || rowIndex === 4) {
         startCol += 2; 
       }
-    }
-    
-    // For very small screens, ensure a minimum number of dots per row
-    if (dimensions.width < 375 && startCol > 1) {
-      startCol = 1; // Ensure at least a few dots show on very small screens
     }
     
     for (let colIndex = startCol; colIndex < maxCols; colIndex++) {
