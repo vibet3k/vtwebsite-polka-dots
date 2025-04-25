@@ -126,10 +126,6 @@ const PolkaDotBackground = () => {
   // Footer height - smaller on mobile
   const footerHeight = dimensions.width < 768 ? 40 : 50;
   
-  // Calculate logo dimensions - increase desktop size by 25%
-  const logoWidth = dimensions.width < 768 ? 180 : 375; // 300 * 1.25 = 375
-  const logoHeight = dimensions.width < 768 ? 60 : 125; // 100 * 1.25 = 125
-  
   return (
     <div className="bg-[#0074bc] w-screen h-screen overflow-hidden relative">
       {/* Polka dot pattern */}
@@ -137,15 +133,15 @@ const PolkaDotBackground = () => {
       
       {/* Logo in the upper left - responsive sizing with 25% larger desktop size */}
       <div className="absolute top-4 md:top-8 left-4 md:left-8 z-10">
-      <Image 
-        src="/images/vt_Logo_Tagline_White.png" 
-        alt="Vibrant Technology Logo" 
-        width={dimensions.width < 768 ? 180 : 375} // Increased from 300 to 375 (25% larger)
-        height={dimensions.width < 768 ? 60 : 125} // Increased from 100 to 125 (25% larger)
-        className="w-[180px] md:w-[300px] lg:w-[375px]" // Increased lg size from 300px to 375px
-        priority
-      />
-    </div>
+        <Image 
+          src="/images/vt_Logo_Tagline_White.png" 
+          alt="Vibrant Technology Logo" 
+          width={dimensions.width < 768 ? 180 : 375} // 25% larger than original 300
+          height={dimensions.width < 768 ? 60 : 125} // 25% larger than original 100
+          className="w-[180px] md:w-[300px] lg:w-[375px]"
+          priority
+        />
+      </div>
       
       {/* Kelly Green footer */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#39b54a]" style={{ height: `${footerHeight}px` }}>
