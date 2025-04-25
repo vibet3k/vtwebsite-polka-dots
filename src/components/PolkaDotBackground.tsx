@@ -126,19 +126,23 @@ const PolkaDotBackground = () => {
   // Footer height - smaller on mobile
   const footerHeight = dimensions.width < 768 ? 40 : 50;
   
+  // Calculate logo dimensions - increase desktop size by 25%
+  const logoWidth = dimensions.width < 768 ? 180 : 375; // 300 * 1.25 = 375
+  const logoHeight = dimensions.width < 768 ? 60 : 125; // 100 * 1.25 = 125
+  
   return (
     <div className="bg-[#0074bc] w-screen h-screen overflow-hidden relative">
       {/* Polka dot pattern */}
       {dots}
       
-      {/* Logo in the upper left - responsive sizing */}
+      {/* Logo in the upper left - responsive sizing with 25% larger desktop size */}
       <div className="absolute top-4 md:top-8 left-4 md:left-8 z-10">
         <Image 
           src="/images/vt_Logo_Tagline_White.png" 
           alt="Vibrant Technology Logo" 
-          width={dimensions.width < 768 ? 180 : 300}
-          height={dimensions.width < 768 ? 60 : 100}
-          className="w-[180px] md:w-[240px] lg:w-[300px]"
+          width={logoWidth}
+          height={logoHeight}
+          className="w-[180px] md:w-[300px] lg:w-[375px]"
           priority
         />
       </div>
